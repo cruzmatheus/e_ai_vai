@@ -14,16 +14,29 @@ import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
 import com.orhanobut.logger.Logger;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener;
+import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
+
+import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity  {
+public class MainActivity extends AppCompatActivity implements OnDateSetListener, com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener {
 
     private GoogleApiClient googleApiClient;
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
     @Bind(R.id.location)
     EditText location;
+    @Bind(R.id.event_datetime_from)
+    EditText dateTimeFrom;
+    @Bind(R.id.event_datetime_to)
+    EditText dateTimeTo;
+
+    String dateHelper;
+    int dateTimeId;
 
 
     @Override
@@ -74,5 +87,38 @@ public class MainActivity extends AppCompatActivity  {
         }
     }
 
+    @OnClick({R.id.event_datetime_from,R.id.event_datetime_to})
+    public void changeDate(EditText field) {
+        dateTimeId = field.getId();
+        Calendar now = Calendar.getInstance();
+        DatePickerDialog datePicker = DatePickerDialog.newInstance(
+                MainActivity.this,
+                now.get(Calendar.YEAR),
+                now.get(Calendar.MONTH),
+                now.get(Calendar.DAY_OF_MONTH)
+        );
+        datePicker.show(getFragmentManager(), "Datepickerdialog");
+    }
 
+
+    @Override
+    public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
+        dateHelper = String.format("%d/%d/%d", dayOfMonth, (monthOfYear+1), year);
+        Calendar now = Calendar.getInstance();
+        com.wdullaer.materialdatetimepicker.time.TimePickerDialog timePicker = com.wdullaer.materialdatetimepicker.time.TimePickerDialog.newInstance(
+                MainActivity.this,
+                now.get(Calendar.HOUR_OF_DAY),
+                now.get(Calendar.MINUTE),
+                true
+        );
+        timePicker.show(getFragmentManager(), "Timepickerdialog");
+    }
+
+    @Override
+    public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+        if (dateTimeId == dateTimeFrom.getId())
+            dateTimeFrom.setText(dateHelper + "  " + String.format("%d:%d", hourOfDay, minute));
+        else
+            dateTimeTo.setText(dateHelper + "  " + String.format("%d:%d", hourOfDay, minute));
+    }
 }

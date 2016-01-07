@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">E ai vai?</string>
+
+    <!-- Event attributes -->
+    <string name="event_name">Nome do compromisso</string>
+    <string name="event_datetime_from">Início do evento</string>
+    <string name="event_date_time_to">Término do evento</string>
+    <string name="event_recurring">Recorrente?</string>
 </resources>
