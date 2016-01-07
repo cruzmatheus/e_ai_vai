@@ -28,7 +28,7 @@ public class MainActivity extends AppCompatActivity implements OnDateSetListener
 
     private GoogleApiClient googleApiClient;
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
-    @Bind(R.id.location)
+    @Bind(R.id.event_location)
     EditText location;
     @Bind(R.id.event_datetime_from)
     EditText dateTimeFrom;

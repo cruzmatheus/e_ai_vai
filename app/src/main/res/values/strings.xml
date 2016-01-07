@@ -6,4 +6,8 @@
     <string name="event_datetime_from">Início do evento</string>
     <string name="event_date_time_to">Término do evento</string>
     <string name="event_recurring">Recorrente?</string>
+    <string name="event_location">Localização</string>
+
+    <!-- Buttons -->
+    <string name="save">Salvar</string>
 </resources>

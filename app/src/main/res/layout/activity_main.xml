@@ -53,12 +53,36 @@
     </LinearLayout>
 
     <LinearLayout
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_width="fill_parent">
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1">
+            <EditText android:id="@+id/event_location"
+                android:layout_height="wrap_content"
+                android:layout_width="fill_parent"
+                android:hint="@string/event_location"/>
+            </android.support.design.widget.TextInputLayout>
+        <Button android:text=""
+            android:id="@+id/btnMap"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="searchEstablishments">
+        </Button>
+
+    </LinearLayout>
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingTop="15dp">
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:text="@string/event_recurring"/>
+            android:text="@string/event_recurring"
+            android:paddingTop="10dp" />
         <CheckBox
             android:id="@+id/event_recurring"
             android:layout_width="wrap_content"
@@ -66,18 +90,20 @@
             />
     </LinearLayout>
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dip"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:orientation="vertical" >
 
+        <Button
+            android:id="@+id/btnSave"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal|center"
+            android:text="@string/save" />
+    </LinearLayout>
 
-
-    <EditText
-        android:id="@+id/location"
-        android:layout_width="213dp"
-        android:layout_height="wrap_content" />
-
-    <Button
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Buscar endereço"
-        android:onClick="searchEstablishments"/>
 
 </LinearLayout>
