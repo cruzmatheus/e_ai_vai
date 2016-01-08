@@ -4,7 +4,9 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
+import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.google.android.gms.common.GooglePlayServicesNotAvailableException;
 import com.google.android.gms.common.GooglePlayServicesRepairableException;
@@ -13,6 +15,7 @@ import com.google.android.gms.common.api.Status;
 import com.google.android.gms.location.places.AutocompleteFilter;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlaceAutocomplete;
+import com.google.android.gms.maps.model.LatLng;
 import com.orhanobut.logger.Logger;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog.OnDateSetListener;
@@ -23,28 +26,39 @@ import java.util.Calendar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import matheus.com.br.eaivai.dao.EventDao;
+import matheus.com.br.eaivai.entity.Event;
+import utils.Util;
 
-public class MainActivity extends AppCompatActivity implements OnDateSetListener, com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener {
+public class EventFormActivity extends AppCompatActivity implements OnDateSetListener, com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener {
 
     private GoogleApiClient googleApiClient;
     int PLACE_AUTOCOMPLETE_REQUEST_CODE = 1;
+    @Bind(R.id.event_name)
+    TextView name;
     @Bind(R.id.event_location)
     EditText location;
     @Bind(R.id.event_datetime_from)
     EditText dateTimeFrom;
     @Bind(R.id.event_datetime_to)
     EditText dateTimeTo;
-
+    @Bind(R.id.event_recurring)
+    CheckBox recurring;
     String dateHelper;
     int dateTimeId;
+    EventDao eventDao;
+    Event event;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.event_form_activity);
         Logger.init("EAIVAI");
         ButterKnife.bind(this);
+
+        event = new Event();
+        eventDao = new EventDao(this);
 
 
     }
@@ -65,34 +79,12 @@ public class MainActivity extends AppCompatActivity implements OnDateSetListener
         }
     }
 
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Logger.d(requestCode+"");
-        Logger.d(resultCode+"");
-        Logger.d(data.toString());
-        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                Place place = PlaceAutocomplete.getPlace(this, data);
-                Logger.d("Place: " + place.getName());
-                location.setText(place.getName());
-            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
-                Status status = PlaceAutocomplete.getStatus(this, data);
-                // TODO: Handle the error.
-                Logger.e(status.getStatusMessage());
-
-            } else if (resultCode == RESULT_CANCELED) {
-                // The user canceled the operation.
-            }
-        }
-    }
-
     @OnClick({R.id.event_datetime_from,R.id.event_datetime_to})
     public void changeDate(EditText field) {
         dateTimeId = field.getId();
         Calendar now = Calendar.getInstance();
         DatePickerDialog datePicker = DatePickerDialog.newInstance(
-                MainActivity.this,
+                EventFormActivity.this,
                 now.get(Calendar.YEAR),
                 now.get(Calendar.MONTH),
                 now.get(Calendar.DAY_OF_MONTH)
@@ -103,10 +95,10 @@ public class MainActivity extends AppCompatActivity implements OnDateSetListener
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        dateHelper = String.format("%d/%d/%d", dayOfMonth, (monthOfYear+1), year);
+        dateHelper = String.format("%d/%d/%d", dayOfMonth, (monthOfYear + 1), year);
         Calendar now = Calendar.getInstance();
         com.wdullaer.materialdatetimepicker.time.TimePickerDialog timePicker = com.wdullaer.materialdatetimepicker.time.TimePickerDialog.newInstance(
-                MainActivity.this,
+                EventFormActivity.this,
                 now.get(Calendar.HOUR_OF_DAY),
                 now.get(Calendar.MINUTE),
                 true
@@ -116,9 +108,41 @@ public class MainActivity extends AppCompatActivity implements OnDateSetListener
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
-        if (dateTimeId == dateTimeFrom.getId())
-            dateTimeFrom.setText(dateHelper + "  " + String.format("%d:%d", hourOfDay, minute));
-        else
-            dateTimeTo.setText(dateHelper + "  " + String.format("%d:%d", hourOfDay, minute));
+        if (dateTimeId == dateTimeFrom.getId()) {
+            String helper = dateHelper + "  " + String.format("%d:%d", hourOfDay, minute);
+            dateTimeFrom.setText(helper);
+            event.setDatetimeFrom(Util.parseStringToDate(helper, "dd/MM/yyyy HH:mm"));
+        } else {
+            String helper = dateHelper + "  " + String.format("%d:%d", hourOfDay, minute);
+            dateTimeTo.setText(helper);
+            event.setDatetimeTo(Util.parseStringToDate(helper, "dd/MM/yyyy HH:mm"));
+        }
+    }
+
+    public void saveEvent(View view) {
+        Logger.d("ChEGOU");
+        event.setName(name.getText().toString());
+        event.setRecurring(recurring.isSelected());
+
+        eventDao.save(event);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == PLACE_AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
+                Place place = PlaceAutocomplete.getPlace(this, data);
+                LatLng latLng = place.getLatLng();
+                location.setText(place.getName());
+                event.setLatitude(latLng.latitude);
+                event.setLongetude(latLng.longitude);
+            } else if (resultCode == PlaceAutocomplete.RESULT_ERROR) {
+                Status status = PlaceAutocomplete.getStatus(this, data);
+                // TODO: Handle the error.
+                Logger.e(status.getStatusMessage());
+            } else if (resultCode == RESULT_CANCELED) {
+                // The user canceled the operation.
+            }
+        }
     }
 }

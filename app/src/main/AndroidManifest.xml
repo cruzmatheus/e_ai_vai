@@ -9,9 +9,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme" >
 
-        <meta-data android:name="com.google.android.geo.API_KEY" android:value="AIzaSyBoN0Yzz8hKfNmXq_5tIZPo4bG_q-hl47o" />
+        <meta-data android:name="com.google.android.geo.API_KEY" android:value="@string/API_KEY" />
 
-        <activity android:name=".MainActivity" >
+        <activity android:name=".EventFormActivity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
