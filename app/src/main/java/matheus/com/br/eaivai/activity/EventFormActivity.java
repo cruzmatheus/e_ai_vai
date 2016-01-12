@@ -1,4 +1,4 @@
-package matheus.com.br.eaivai;
+package matheus.com.br.eaivai.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -26,8 +26,10 @@ import java.util.Calendar;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import matheus.com.br.eaivai.R;
 import matheus.com.br.eaivai.dao.EventDao;
 import matheus.com.br.eaivai.entity.Event;
+import utils.ParseUtils;
 import utils.Util;
 
 public class EventFormActivity extends AppCompatActivity implements OnDateSetListener, com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener {
@@ -56,10 +58,10 @@ public class EventFormActivity extends AppCompatActivity implements OnDateSetLis
         setContentView(R.layout.event_form_activity);
         Logger.init("EAIVAI");
         ButterKnife.bind(this);
+        ParseUtils.initializeParse(this);
 
         event = new Event();
-        eventDao = new EventDao(this);
-
+        eventDao = new EventDao();
 
     }
 
@@ -120,11 +122,10 @@ public class EventFormActivity extends AppCompatActivity implements OnDateSetLis
     }
 
     public void saveEvent(View view) {
-        Logger.d("ChEGOU");
         event.setName(name.getText().toString());
-        event.setRecurring(recurring.isSelected());
+        event.setRecurring(recurring.isChecked());
 
-        eventDao.save(event);
+        boolean saved = eventDao.save(event);
     }
 
     @Override

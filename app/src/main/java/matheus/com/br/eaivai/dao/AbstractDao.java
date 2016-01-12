@@ -1,46 +1,38 @@
 package matheus.com.br.eaivai.dao;
 
-import android.content.Context;
+import com.orhanobut.logger.Logger;
+import com.parse.ParseObject;
+import com.parse.ParseQuery;
 
-import java.lang.reflect.Method;
-
-import io.realm.Realm;
-import io.realm.RealmObject;
+import java.util.List;
 
 /**
  * Created by matheus on 05/01/16.
  */
-public class AbstractDao<E extends RealmObject> {
+public class AbstractDao<E extends ParseObject> {
 
-    protected Realm realm;
+    Class<E> classType;
 
-    public AbstractDao(Context context) {
-        realm = Realm.getInstance(context);
+    public AbstractDao(Class<E> classType) {
+        this.classType = classType;
     }
 
-    public void save(E e) {
-        realm.beginTransaction();
-        e = generateIdForClass(e);
-        realm.copyToRealm(e);
-        realm.commitTransaction();
+    public boolean save(E e) {
+        e.pinInBackground();
+        return (e.saveEventually() != null);
     }
 
-    public long getNextId(E e) {
-        return realm.where(e.getClass()).max("id").longValue() + 1;
-    }
-
-    public E generateIdForClass(E e) {
-        Method[] methods = e.getClass().getDeclaredMethods();
+    public List<E> listAll(E e) {
         try {
-            for (Method method : methods) {
-                if (method.getName().contains("setId")) {
-                    method.invoke(e, getNextId(e));
-                }
-            }
+            ParseQuery<E> query = ParseQuery.getQuery(classType);
+            query.fromLocalDatastore();
+            return query.find();
         } catch (Exception ex) {
-            ex.printStackTrace();
+            Logger.e(ex.getMessage());
         }
 
-        return e;
+        return null;
     }
+
+
 }

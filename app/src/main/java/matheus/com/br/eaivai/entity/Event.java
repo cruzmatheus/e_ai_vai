@@ -1,84 +1,81 @@
 package matheus.com.br.eaivai.entity;
 
-import java.util.Date;
+import com.parse.ParseClassName;
+import com.parse.ParseObject;
 
-import io.realm.RealmObject;
-import io.realm.annotations.PrimaryKey;
-import io.realm.annotations.Required;
+import java.util.Date;
+import java.util.UUID;
 
 /**
  * Created by matheus on 05/01/16.
  */
-public class Event extends RealmObject {
+@ParseClassName("Event")
+public class Event extends ParseObject {
 
-    @PrimaryKey
-    private long id;
-//    @Required
-    private String name;
-//    @Required
-    private Date datetimeFrom;
-//    @Required
-    private Date datetimeTo;
-//    @Required
-    private boolean recurring;
-//    @Required
-    private double latitude;
-//    @Required
-    private double longetude;
+    public Event() { }
+
+    public String getUuidString() {
+        return getString("uuid");
+    }
+
+    public void setUuidString() {
+        UUID uuid = UUID.randomUUID();
+        put("uuid", uuid.toString());
+    }
+
+    public boolean isDraft() {
+        return getBoolean("isDraft");
+    }
+
+    public void setDraft(boolean isDraft) {
+        put("isDraft", isDraft);
+    }
 
     public String getName() {
-        return name;
+        return getString("name");
     }
 
     public void setName(String name) {
-        this.name = name;
+        put("name", name);
     }
 
     public Date getDatetimeFrom() {
-        return datetimeFrom;
+        return getDate("dateTimeFrom");
     }
 
     public void setDatetimeFrom(Date datetimeFrom) {
-        this.datetimeFrom = datetimeFrom;
+        put("dateTimeFrom", datetimeFrom);
     }
 
-    public Date getDatetimeTo() {
-        return datetimeTo;
+    public Date getDateTimeTo() {   return getDate("dateTimeTo");
     }
 
-    public void setDatetimeTo(Date datetimeTo) {
-        this.datetimeTo = datetimeTo;
+    public void setDatetimeTo(Date dateTimeTo) {
+        put("dateTimeTo", dateTimeTo);
     }
 
     public boolean isRecurring() {
-        return recurring;
+        return getBoolean("recurring");
     }
 
     public void setRecurring(boolean recurring) {
-        this.recurring = recurring;
+        put("recurring", recurring);
     }
 
     public double getLatitude() {
-        return latitude;
+        return getDouble("latitude");
     }
 
     public void setLatitude(double latitude) {
-        this.latitude = latitude;
+        put("latitude", latitude);
     }
 
     public double getLongetude() {
-        return longetude;
+        return getDouble("longetude");
     }
 
     public void setLongetude(double longetude) {
-        this.longetude = longetude;
+        put("longetude", longetude);
     }
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
-    }
 }

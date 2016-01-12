@@ -9,7 +9,7 @@ import matheus.com.br.eaivai.entity.Event;
  */
 public class EventDao extends AbstractDao<Event> {
 
-    public EventDao(Context context) {
-        super(context);
+    public EventDao() {
+        super(Event.class);
     }
 }

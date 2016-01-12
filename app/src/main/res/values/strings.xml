@@ -1,6 +1,9 @@
 <resources>
+    <!-- Configs -->
     <string name="app_name">E ai vai?</string>
     <string name="API_KEY">AIzaSyBoN0Yzz8hKfNmXq_5tIZPo4bG_q-hl47o</string>
+    <string name="PARSE_APPLICATION_ID">hdy9g0Pmv5O2aPS3VS1ariLOZW22QGGfMAysPLVP</string>
+    <string name="PARSE_CLIENT_KEY">rCtHmbcIanYXHwCn8F4UyTpMI82MIfNBN8aKvDcZ</string>
 
     <!-- Event attributes -->
     <string name="event_name">Nome do compromisso</string>
