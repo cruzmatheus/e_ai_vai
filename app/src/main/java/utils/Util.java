@@ -18,9 +18,26 @@ public class Util {
         try {
             formattedDate = formatter.parse(date);
         } catch (ParseException e) {
-            Logger.d("%s-%s",e.getMessage(), e.getStackTrace());
+            Logger.d("%s",e.getMessage());
         }
 
         return formattedDate;
+    }
+
+    public static String parseDateToString(Date date, String format) {
+        SimpleDateFormat formatter = new SimpleDateFormat(format);
+        String formattedDate = null;
+
+        try {
+            formattedDate = formatter.format(date);
+        } catch (Exception e) {
+            Logger.d("%s",e.getMessage());
+        }
+
+        return formattedDate;
+    }
+
+    public static boolean isBlank(String str) {
+        return str == null || str.length() == 0;
     }
 }

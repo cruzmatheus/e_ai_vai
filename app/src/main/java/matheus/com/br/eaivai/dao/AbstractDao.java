@@ -22,7 +22,7 @@ public class AbstractDao<E extends ParseObject> {
         return (e.saveEventually() != null);
     }
 
-    public List<E> listAll(E e) {
+    public List<E> listAll() {
         try {
             ParseQuery<E> query = ParseQuery.getQuery(classType);
             query.fromLocalDatastore();

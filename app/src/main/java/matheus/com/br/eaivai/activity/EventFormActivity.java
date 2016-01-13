@@ -29,7 +29,6 @@ import butterknife.OnClick;
 import matheus.com.br.eaivai.R;
 import matheus.com.br.eaivai.dao.EventDao;
 import matheus.com.br.eaivai.entity.Event;
-import utils.ParseUtils;
 import utils.Util;
 
 public class EventFormActivity extends AppCompatActivity implements OnDateSetListener, com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener {
@@ -56,9 +55,7 @@ public class EventFormActivity extends AppCompatActivity implements OnDateSetLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.event_form_activity);
-        Logger.init("EAIVAI");
         ButterKnife.bind(this);
-        ParseUtils.initializeParse(this);
 
         event = new Event();
         eventDao = new EventDao();
@@ -125,7 +122,16 @@ public class EventFormActivity extends AppCompatActivity implements OnDateSetLis
         event.setName(name.getText().toString());
         event.setRecurring(recurring.isChecked());
 
-        boolean saved = eventDao.save(event);
+        boolean saved = false;
+
+        if (validateForm()) {
+            saved = eventDao.save(event);
+        }
+
+        if (saved) {
+            Intent intent = new Intent(this, EventListActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -145,5 +151,18 @@ public class EventFormActivity extends AppCompatActivity implements OnDateSetLis
                 // The user canceled the operation.
             }
         }
+    }
+
+    private boolean validateForm() {
+        boolean valid = true;
+        TextView[] inputs = {name, dateTimeFrom, dateTimeTo, location};
+        for (TextView tv : inputs) {
+            if (Util.isBlank(tv.getText().toString())) {
+                tv.setError("Não pode ficar em branco.");
+                valid = false;
+            }
+        }
+
+        return valid;
     }
 }
