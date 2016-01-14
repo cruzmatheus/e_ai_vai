@@ -29,7 +29,7 @@ import butterknife.OnClick;
 import matheus.com.br.eaivai.R;
 import matheus.com.br.eaivai.dao.EventDao;
 import matheus.com.br.eaivai.entity.Event;
-import utils.Util;
+import matheus.com.br.eaivai.utils.Util;
 
 public class EventFormActivity extends AppCompatActivity implements OnDateSetListener, com.wdullaer.materialdatetimepicker.time.TimePickerDialog.OnTimeSetListener {
 
@@ -110,12 +110,21 @@ public class EventFormActivity extends AppCompatActivity implements OnDateSetLis
         if (dateTimeId == dateTimeFrom.getId()) {
             String helper = dateHelper + "  " + String.format("%d:%d", hourOfDay, minute);
             dateTimeFrom.setText(helper);
-            event.setDatetimeFrom(Util.parseStringToDate(helper, "dd/MM/yyyy HH:mm"));
+            event.setDateTimeFrom(Util.parseStringToDate(helper, "dd/MM/yyyy HH:mm"));
         } else {
             String helper = dateHelper + "  " + String.format("%d:%d", hourOfDay, minute);
             dateTimeTo.setText(helper);
             event.setDatetimeTo(Util.parseStringToDate(helper, "dd/MM/yyyy HH:mm"));
         }
+    }
+
+    public void inviteContacts(View view) {
+        event.setName(name.getText().toString());
+        event.setRecurring(recurring.isChecked());
+
+        Intent intent = new Intent(this, ContactSelectorActivity.class);
+//        intent.putExtra("event", event);
+        startActivity(intent);
     }
 
     public void saveEvent(View view) {

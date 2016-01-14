@@ -98,12 +98,12 @@
         android:orientation="vertical" >
 
         <Button
-            android:id="@+id/btnSave"
+            android:id="@+id/btnAdvance"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal|center"
-            android:text="@string/save"
-            android:onClick="saveEvent"/>
+            android:text="@string/advance"
+            android:onClick="inviteContacts"/>
     </LinearLayout>
 
 

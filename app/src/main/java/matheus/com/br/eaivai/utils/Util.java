@@ -1,4 +1,4 @@
-package utils;
+package matheus.com.br.eaivai.utils;
 
 import com.orhanobut.logger.Logger;
 

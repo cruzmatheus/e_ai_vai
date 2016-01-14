@@ -4,8 +4,7 @@ import android.app.Application;
 
 import com.orhanobut.logger.Logger;
 
-import butterknife.ButterKnife;
-import utils.ParseUtils;
+import matheus.com.br.eaivai.utils.ParseUtils;
 
 /**
  * Created by matheus on 12/01/16.

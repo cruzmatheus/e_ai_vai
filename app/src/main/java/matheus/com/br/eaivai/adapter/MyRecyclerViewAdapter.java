@@ -22,7 +22,6 @@ public class MyRecyclerViewAdapter extends RecyclerView
         .Adapter<MyRecyclerViewAdapter.DataObjectHolder> {
 
     private List<DataObject> mDataset;
-    private static MyClickListener myClickListener;
 
     public MyRecyclerViewAdapter(List<DataObject> myDataset) {
         mDataset = myDataset;
@@ -67,7 +66,4 @@ public class MyRecyclerViewAdapter extends RecyclerView
         }
     }
 
-    public interface MyClickListener {
-        public void onItemClick(int position, View v);
-    }
 }

@@ -14,4 +14,5 @@
 
     <!-- Buttons -->
     <string name="save">Salvar</string>
+    <string name="advance">Avançar</string>
 </resources>

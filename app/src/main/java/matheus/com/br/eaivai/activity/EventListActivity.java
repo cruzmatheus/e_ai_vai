@@ -3,7 +3,6 @@ package matheus.com.br.eaivai.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
@@ -18,7 +17,7 @@ import matheus.com.br.eaivai.adapter.DataObject;
 import matheus.com.br.eaivai.adapter.MyRecyclerViewAdapter;
 import matheus.com.br.eaivai.dao.EventDao;
 import matheus.com.br.eaivai.entity.Event;
-import utils.Util;
+import matheus.com.br.eaivai.utils.Util;
 
 /**
  * Created by matheus on 12/01/16.
@@ -54,7 +53,7 @@ public class EventListActivity extends Activity {
         List elements = new ArrayList<DataObject>();
         List<Event> events = eventDao.listAll();
         for (Event event : events) {
-            DataObject obj = new DataObject(event.getName(), Util.parseDateToString(event.getDatetimeFrom(), "dd/MM/yyyy HH:mm"));
+            DataObject obj = new DataObject(event.getName(), Util.parseDateToString(event.getDateTimeFrom(), "dd/MM/yyyy HH:mm"));
             elements.add(obj);
         }
         return elements;
