@@ -8,13 +8,23 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.FilterQueryProvider;
+import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.SimpleCursorAdapter;
+import android.widget.TextView;
+
+import com.orhanobut.logger.Logger;
+
+import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import matheus.com.br.eaivai.R;
+import matheus.com.br.eaivai.adapter.ContactArrayAdapter;
 import matheus.com.br.eaivai.utils.Constants;
 
 /**
@@ -24,8 +34,12 @@ public class ContactSelectorActivity extends Activity {
 
     @Bind(R.id.at_Contacts)
     AutoCompleteTextView contact;
+    @Bind(R.id.contactList)
+    ListView contacListView;
 
     SimpleCursorAdapter mAdapter;
+    ArrayList<String> contactList;
+    ContactArrayAdapter contactAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +47,9 @@ public class ContactSelectorActivity extends Activity {
         setContentView(R.layout.contact_selector);
         ButterKnife.bind(this);
         requestReadContactsPermission();
+        contactList = new ArrayList<>();
+        contactAdapter = new ContactArrayAdapter(this, contactList);
+        contacListView.setAdapter(contactAdapter);
 
         mAdapter = new SimpleCursorAdapter(this, R.layout.single_contact, null,
                 new String[] { ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER },
@@ -43,12 +60,21 @@ public class ContactSelectorActivity extends Activity {
         mAdapter.setFilterQueryProvider(new FilterQueryProvider() {
             public Cursor runQuery(CharSequence str) {
                 return getCursor(str);
-            } });
+            }
+        });
 
         mAdapter.setCursorToStringConverter(new SimpleCursorAdapter.CursorToStringConverter() {
             public CharSequence convertToString(Cursor cur) {
                 int index = cur.getColumnIndex(ContactsContract.Contacts.DISPLAY_NAME);
                 return cur.getString(index);
+            }
+        });
+
+        contact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                contactList.add(((TextView)((LinearLayout) parent.getChildAt(0)).getChildAt(0)).getText().toString());
+                contactAdapter.notifyDataSetChanged();
             }
         });
 
