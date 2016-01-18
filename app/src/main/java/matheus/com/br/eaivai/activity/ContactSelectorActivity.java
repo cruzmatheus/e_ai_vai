@@ -47,10 +47,24 @@ public class ContactSelectorActivity extends Activity {
         setContentView(R.layout.contact_selector);
         ButterKnife.bind(this);
         requestReadContactsPermission();
+        setupView();
+    }
+
+    public Cursor getCursor(CharSequence str) {
+        String select = ContactsContract.Contacts.DISPLAY_NAME + " LIKE ? AND " + ContactsContract.Contacts.HAS_PHONE_NUMBER + " = ?";
+        String[]  selectArgs = { "%" + str + "%", "1"};
+        String[] contactsProjection = new String[] {
+                ContactsContract.Contacts._ID,
+                ContactsContract.Contacts.DISPLAY_NAME,
+                ContactsContract.Contacts.LOOKUP_KEY };
+
+        return getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, select, selectArgs, null);
+    }
+
+    public void setupView() {
         contactList = new ArrayList<>();
         contactAdapter = new ContactArrayAdapter(this, contactList);
         contacListView.setAdapter(contactAdapter);
-
         mAdapter = new SimpleCursorAdapter(this, R.layout.single_contact, null,
                 new String[] { ContactsContract.Contacts.DISPLAY_NAME, ContactsContract.CommonDataKinds.Phone.NUMBER },
                 new int[] {R.id.tv_ContactName, R.id.tv_ContactPhone },
@@ -73,22 +87,15 @@ public class ContactSelectorActivity extends Activity {
         contact.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                contactList.add(((TextView)((LinearLayout) parent.getChildAt(0)).getChildAt(0)).getText().toString());
-                contactAdapter.notifyDataSetChanged();
+                addContactNameToList(parent);
             }
         });
-
     }
 
-    public Cursor getCursor(CharSequence str) {
-        String select = ContactsContract.Contacts.DISPLAY_NAME + " LIKE ? ";
-        String[]  selectArgs = { "%" + str + "%"};
-        String[] contactsProjection = new String[] {
-                ContactsContract.Contacts._ID,
-                ContactsContract.Contacts.DISPLAY_NAME,
-                ContactsContract.Contacts.LOOKUP_KEY };
-
-        return getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, select, selectArgs, null);
+    public void addContactNameToList(AdapterView<?> parent) {
+        contactList.add(((TextView)((LinearLayout) parent.getChildAt(0)).getChildAt(0)).getText().toString());
+        contactAdapter.notifyDataSetChanged();
+        contact.setText("");
     }
 
     private void requestReadContactsPermission() {
@@ -97,15 +104,4 @@ public class ContactSelectorActivity extends Activity {
         }
     }
 
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        switch (requestCode) {
-            case Constants.REQUEST_READ_CONTACTS_PERMISSION_CODE:
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                }
-                break;
-            default:
-        }
-    }
 }

@@ -107,12 +107,11 @@ public class EventFormActivity extends AppCompatActivity implements OnDateSetLis
 
     @Override
     public void onTimeSet(RadialPickerLayout view, int hourOfDay, int minute, int second) {
+        String helper = dateHelper + "  " + String.format("%d:%d", hourOfDay, minute);
         if (dateTimeId == dateTimeFrom.getId()) {
-            String helper = dateHelper + "  " + String.format("%d:%d", hourOfDay, minute);
             dateTimeFrom.setText(helper);
             event.setDateTimeFrom(Util.parseStringToDate(helper, "dd/MM/yyyy HH:mm"));
         } else {
-            String helper = dateHelper + "  " + String.format("%d:%d", hourOfDay, minute);
             dateTimeTo.setText(helper);
             event.setDatetimeTo(Util.parseStringToDate(helper, "dd/MM/yyyy HH:mm"));
         }
