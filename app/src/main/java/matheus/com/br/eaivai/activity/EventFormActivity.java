@@ -121,25 +121,13 @@ public class EventFormActivity extends AppCompatActivity implements OnDateSetLis
         event.setName(name.getText().toString());
         event.setRecurring(recurring.isChecked());
 
+        if (!validateForm()) {
+            return;
+        }
+
         Intent intent = new Intent(this, ContactSelectorActivity.class);
-//        intent.putExtra("event", event);
+        intent.putExtra("event", event);
         startActivity(intent);
-    }
-
-    public void saveEvent(View view) {
-        event.setName(name.getText().toString());
-        event.setRecurring(recurring.isChecked());
-
-        boolean saved = false;
-
-        if (validateForm()) {
-            saved = eventDao.save(event);
-        }
-
-        if (saved) {
-            Intent intent = new Intent(this, EventListActivity.class);
-            startActivity(intent);
-        }
     }
 
     @Override

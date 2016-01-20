@@ -2,12 +2,17 @@ package matheus.com.br.eaivai.activity;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
@@ -23,23 +28,28 @@ import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import matheus.com.br.eaivai.R;
 import matheus.com.br.eaivai.adapter.ContactArrayAdapter;
+import matheus.com.br.eaivai.dao.EventDao;
+import matheus.com.br.eaivai.entity.Event;
 import matheus.com.br.eaivai.utils.Constants;
 
 /**
  * Created by matheus on 13/01/16.
  */
-public class ContactSelectorActivity extends Activity {
+public class ContactSelectorActivity extends AppCompatActivity {
 
     @Bind(R.id.at_Contacts)
     AutoCompleteTextView contact;
     @Bind(R.id.contactList)
     ListView contacListView;
+//    @Bind(R.id.toolbar) Toolbar toolbar;
 
     SimpleCursorAdapter mAdapter;
     ArrayList<String> contactList;
     ContactArrayAdapter contactAdapter;
+    EventDao eventDao;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +58,7 @@ public class ContactSelectorActivity extends Activity {
         ButterKnife.bind(this);
         requestReadContactsPermission();
         setupView();
+        eventDao = new EventDao();
     }
 
     public Cursor getCursor(CharSequence str) {
@@ -93,7 +104,7 @@ public class ContactSelectorActivity extends Activity {
     }
 
     public void addContactNameToList(AdapterView<?> parent) {
-        contactList.add(((TextView)((LinearLayout) parent.getChildAt(0)).getChildAt(0)).getText().toString());
+        contactList.add(((TextView) ((LinearLayout) parent.getChildAt(0)).getChildAt(0)).getText().toString());
         contactAdapter.notifyDataSetChanged();
         contact.setText("");
     }
@@ -104,4 +115,35 @@ public class ContactSelectorActivity extends Activity {
         }
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.event_toolbar_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.create_event:
+                createEvent();
+                return true;
+            default:
+                Logger.d("Default");
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    public void createEvent() {
+        Intent intent = getIntent();
+        Event event = ((Event) intent.getExtras().getParcelable("event"));
+
+        boolean saved = eventDao.save(event);
+
+        if(saved) {
+            Intent i = new Intent(this, EventListActivity.class);
+            startActivity(i);
+        }
+
+
+    }
 }

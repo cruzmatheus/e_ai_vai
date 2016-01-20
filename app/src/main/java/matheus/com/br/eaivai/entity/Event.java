@@ -27,7 +27,9 @@ public class Event extends ParseObject implements Parcelable {
         }
     };
 
-    private Event(Parcel p){ }
+    private Event(Parcel p){
+        readFromParcel(p);
+    }
     public Event() { }
 
     public String getUuidString() {
@@ -106,5 +108,13 @@ public class Event extends ParseObject implements Parcelable {
         dest.writeDouble(getLongetude());
         dest.writeLong(getDateTimeFrom().getTime());
         dest.writeLong(getDateTimeTo().getTime());
+    }
+
+    public void readFromParcel(Parcel in) {
+        setName(in.readString());
+        setLatitude(in.readDouble());
+        setLongetude(in.readDouble());
+        setDateTimeFrom(new Date(in.readLong()));
+        setDatetimeTo(new Date(in.readLong()));
     }
 }
